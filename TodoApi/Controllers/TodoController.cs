@@ -14,7 +14,9 @@ using TodoApi.Models.Response;
 namespace TodoApi.Controllers
 {
     // [Route("[controller]")]
+    [Route("")]
     [ApiController]
+    [Produces("application/json")]
     public class TodoController : ControllerBase
     {
         // Service
@@ -31,15 +33,38 @@ namespace TodoApi.Controllers
         // GET: 목록 조회 
         [Route("todos")]
         [HttpGet]
-        public async Task<ActionResult> GetTodoEntities(TodoListResponse model)
+        public async Task<ActionResult<IEnumerable<TodoEntity>>> GetTodoEntities()
         {
+            var result = _todo.GetTodoEntities();
+
+            if (result.isSuccess == false)
+            {
+                Console.WriteLine("get todo list fail");
+            }
+
+            TodoListResponse responseModel = new TodoListResponse();
+            if (responseModel.TotalCount > 0)
+            {
+                responseModel.List = result.list.Select(p => new TodoListItem()
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Writer = p.Writer
+                }).ToList();
+            }
+            else
+            {
+                responseModel.List = new List<TodoListItem>();
+            }
+
+            return StatusCode(StatusCodes.Status200OK, responseModel);;
         }
         
         // POST: 입력
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Route("to-do")]
         [HttpPost]
-        public async Task<ActionResult> AddTodoEntity([FromForm]AddTodoRequest model)
+        public async Task<ActionResult> AddTodoEntity([FromBody]AddTodoRequest model)
         {
             var result = _todo.AddTodoEntity(
                 model.Title,
@@ -95,10 +120,10 @@ namespace TodoApi.Controllers
         //     return NoContent();
         // }
         
-        private bool TodoItemExists(long id)
-        {
-            return (TodoEntities?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
+        // private bool TodoItemExists(long id)
+        // {
+        //     return (TodoEntities?.Any(e => e.Id == id)).GetValueOrDefault();
+        // }
     }
 }
 
