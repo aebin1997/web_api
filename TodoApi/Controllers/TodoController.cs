@@ -44,6 +44,9 @@ namespace TodoApi.Controllers
 
             TodoListResponse responseModel = new TodoListResponse(result.totalCount, result.list);
 
+            // if (responseModel.TotalCount > 0) {} else {} 없어도 생성자가 있어서 responseModel.TotalCount == 0
+            // 인경우에도 리스트가 생성되는게 맞을까요?
+            
             // responseModel.TotalCount = result.totalCount;
             // if (responseModel.TotalCount > 0)
             // {
