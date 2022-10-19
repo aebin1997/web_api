@@ -2,10 +2,11 @@ namespace TodoApi.Models.Entities
 {
     public class TodoEntity
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; } = "";
         public string Writer { get; set; } = "";
         public string Password { get; set; } = "";
+        
         public DateTime RegTime { get; set; } = DateTime.UtcNow;
         // public string? Name { get; set; }
         // public bool IsComplete { get; set; }
